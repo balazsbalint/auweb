@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version '1.1.5'
+    id 'com.vaadin' version "${vaadinVersion}"
+}
+
+group = 'com.legar'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url "https://maven.vaadin.com/vaadin-addons" }
+}
+
+ext {
+    set('vaadinVersion', vaadinVersion)
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Vaadin Spring Boot starter (uses vaadinVersion from BOM)
+    implementation 'com.vaadin:vaadin-spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+    }
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+// For Vaadin production builds (optional, but good to have)
+vaadin {
+    productionMode = false
+}
