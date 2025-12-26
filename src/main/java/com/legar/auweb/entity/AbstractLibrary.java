@@ -27,9 +27,8 @@ import java.io.Serializable;
 @DiscriminatorColumn(name = "LIBRARY_TYPE", 
                      discriminatorType = DiscriminatorType.STRING, 
                      length = 6)
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"PRIME_LIBRARY", "NAME"}))
-@Cacheable(true)
-public abstract class AbstractLibrary implements Serializable {
+@Table(name = "abstractlibrary", uniqueConstraints = @UniqueConstraint(columnNames = {"PRIME_LIBRARY", "NAME"}))
+public class AbstractLibrary implements Serializable {
   protected Long id;
   protected String name;
   protected String uri;
