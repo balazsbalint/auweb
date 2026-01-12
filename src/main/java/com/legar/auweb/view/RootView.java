@@ -14,20 +14,16 @@ public class RootView extends AppLayout implements RouterLayout {
     public RootView() {
         createHeader();
         createDrawer();
-
     }
 
     private void createDrawer() {
         RouterLink naturalObjects = new RouterLink("Natural objects", NaturalObjectsView.class);
         naturalObjects.setHighlightCondition(HighlightConditions.sameLocation());
 
-        RouterLink aliases = new RouterLink("Aliases", AliasesView.class);
-        aliases.setHighlightCondition(HighlightConditions.sameLocation());
+        RouterLink ddms = new RouterLink("ADABAS files", DdmView.class);
+        ddms.setHighlightCondition(HighlightConditions.sameLocation());
 
-        RouterLink fields = new RouterLink("Fields", FieldsView.class);
-        fields.setHighlightCondition(HighlightConditions.sameLocation());
-
-        addToDrawer(naturalObjects, aliases, fields);
+        addToDrawer(naturalObjects, ddms);
     }
 
     private void createHeader() {

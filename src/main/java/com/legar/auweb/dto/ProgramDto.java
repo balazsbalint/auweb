@@ -40,7 +40,7 @@ public class ProgramDto {
                 program.getUri(),
                 program.getLanguage(),
                 program.getModifier(),
-                program.getLibrary().getName()
+                "ONE"
         );
     }
 

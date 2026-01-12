@@ -1,12 +1,17 @@
 package com.legar.auweb.backend;
 
+import com.legar.auweb.dto.DdmDto;
 import com.legar.auweb.dto.ProgramDto;
 import com.legar.auweb.entity.Program;
+import com.legar.auweb.repository.DdmRepository;
 import com.legar.auweb.repository.ProgramRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -17,9 +22,11 @@ import java.util.List;
 public class Programs {
 
     private final ProgramRepository programRepository;
+    private final DdmRepository ddmRepository;
 
-    public Programs(ProgramRepository programRepository) {
+    public Programs(ProgramRepository programRepository, DdmRepository ddmRepository) {
         this.programRepository = programRepository;
+        this.ddmRepository = ddmRepository;
     }
 
     /**
@@ -44,6 +51,23 @@ public class Programs {
                 .toList();
     }
 
+    /**
+     * Retrieves a list of all DDM entities as DTOs.
+     *
+     * @return a list of DdmDto objects representing all stored DDMs.
+     */
+    @Transactional(readOnly = true)
+    public List<DdmDto> getDdmDtos() {
+        return ddmRepository.findAll().stream()
+                .map(DdmDto::fromEntity)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Program> findById(Long id) {
+        return programRepository.findById(id);
+    }
+
     @Transactional
     public void save(Program updatedProgram) {
         programRepository.save(updatedProgram);
@@ -65,7 +89,29 @@ public class Programs {
         program.setDialect(programDto.getDialect());
         program.setUri(programDto.getUri());
         program.setLanguage(programDto.getLanguage());
+    }
 
-        programRepository.save(program);
+    @Transactional(readOnly = true)
+    public Program getProgramById(Long id, EagerLoad... eagerLoad) {
+        Program program = programRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Program not found with id: " + id)
+        );
+        Arrays.stream(eagerLoad).forEach( toBeLoad -> { switch (toBeLoad) {
+            case FLOW:
+                program.getFlows().size();
+                break;
+            case INPUT_OUTPUT:
+                program.getInputs().size();
+                program.getOutputs().size();
+                break;
+            case WORK:
+            case WORKING_STORAGE:
+                program.getWorks().size();
+                break;
+            default:
+                break;
+        } });
+
+        return program;
     }
 }

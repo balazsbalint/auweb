@@ -2,7 +2,6 @@ package com.legar.auweb.view;
 
 import com.legar.auweb.backend.Programs;
 import com.legar.auweb.dto.ProgramDto;
-import com.legar.auweb.entity.Program;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
@@ -35,7 +34,7 @@ public class NaturalObjectsView extends VerticalLayout {
         Grid<ProgramDto> programGrid = new Grid<>(ProgramDto.class);
         programGrid.setItems(programs.getProgramDtos());
         programGrid.setColumns("id", "name", "modifier", "aliasName");
-        addGoButton(programGrid);
+        addIoButton(programGrid);
         makeAliasNameEditable(programGrid);
         return programGrid;
     }
@@ -57,17 +56,16 @@ public class NaturalObjectsView extends VerticalLayout {
         save(event.getItem());
     }
 
-    private void addGoButton(Grid<ProgramDto> grid) {
+    private void addIoButton(Grid<ProgramDto> grid) {
         grid.addComponentColumn(program -> {
-            Button goButton = new Button("Go");
+            Button goButton = new Button("IO");
             goButton.setThemeName("icon");
             goButton.addClickListener(event -> {
-                event.getSource().getUI().ifPresent(ui -> ui.navigate("program/" + program.getId()));
+                event.getSource().getUI().ifPresent(ui -> ui.navigate("output/" + program.getId()));
             });
             goButton.setMaxHeight("1em");
             return goButton;
         }).setHeader("Action");
-
     }
 
     private void save(ProgramDto updatedProgram) {

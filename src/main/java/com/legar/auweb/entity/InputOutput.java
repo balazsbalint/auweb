@@ -119,6 +119,9 @@ public abstract class InputOutput implements Serializable {
     this.measure = measure;
   }
 
+  @Transient
+  public abstract IoType getIoType();
+
   @Version
   public int getVersion() {
     return version;
