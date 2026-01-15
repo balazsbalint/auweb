@@ -4,6 +4,7 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
@@ -17,13 +18,17 @@ public class RootView extends AppLayout implements RouterLayout {
     }
 
     private void createDrawer() {
+
         RouterLink naturalObjects = new RouterLink("Natural objects", NaturalObjectsView.class);
         naturalObjects.setHighlightCondition(HighlightConditions.sameLocation());
 
-        RouterLink ddms = new RouterLink("ADABAS files", DdmView.class);
+        RouterLink ddms = new RouterLink("ADABAS files", FilesView.class);
         ddms.setHighlightCondition(HighlightConditions.sameLocation());
 
-        addToDrawer(naturalObjects, ddms);
+        VerticalLayout drawerLayout = new VerticalLayout(naturalObjects, ddms);
+        drawerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        addToDrawer(drawerLayout);
     }
 
     private void createHeader() {

@@ -7,6 +7,7 @@ public class AdabasFileDto {
     private String name;
     private String uri;
     private int database;
+    private int fileId;
     private List<AdabasFieldDto> fields;
 
     public String getName() {
@@ -31,6 +32,14 @@ public class AdabasFileDto {
 
     public void setDatabase(int database) {
         this.database = database;
+    }
+
+    public int getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(int fileId) {
+        this.fileId = fileId;
     }
 
     public List<AdabasFieldDto> getFields() {

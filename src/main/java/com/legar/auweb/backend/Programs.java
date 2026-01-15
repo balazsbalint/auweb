@@ -1,8 +1,13 @@
 package com.legar.auweb.backend;
 
+import com.legar.auweb.dto.AdabasFieldDto;
+import com.legar.auweb.dto.AdabasFileDto;
 import com.legar.auweb.dto.DdmDto;
 import com.legar.auweb.dto.ProgramDto;
+import com.legar.auweb.entity.AdabasField;
+import com.legar.auweb.entity.Ddm;
 import com.legar.auweb.entity.Program;
+import com.legar.auweb.entity.Type;
 import com.legar.auweb.repository.DdmRepository;
 import com.legar.auweb.repository.ProgramRepository;
 import org.springframework.stereotype.Service;
@@ -113,5 +118,69 @@ public class Programs {
         } });
 
         return program;
+    }
+
+    /**
+     * Retrieves a list of AdabasFieldDto objects for the specified database and file IDs
+     * by extracting field information from the corresponding DDM entity.
+     *
+     * @param dbId the ID of the database to search for
+     * @param fId the file ID within the specified database
+     * @return a list of AdabasFieldDto objects representing the fields associated with the given database and file,
+     *         or an empty list if no matching fields are found
+     */
+    @Transactional(readOnly = true)
+    public List<AdabasFieldDto> getFieldsByDbAndFile(int dbId, int fId) {
+        List<Ddm> ddms = ddmRepository.findByDatabaseIdAndFileId(dbId, fId);
+        if (ddms.isEmpty()) {
+            return List.of();
+        }
+
+        // Assuming there is one primary DDM for the DB/File combination
+        Ddm ddm = ddms.get(0);
+        Type record = ddm.getRecord();
+
+        if (record == null || record.getFields() == null) {
+            return List.of();
+        }
+
+        return record.getFields().stream()
+                .map(this::mapToAdabasFieldDto)
+                .toList();
+    }
+
+    private AdabasFieldDto mapToAdabasFieldDto(Type type) {
+        AdabasFieldDto dto = new AdabasFieldDto();
+        dto.setName(type.getName());
+        dto.setType(type.getType());
+        dto.setLength(type.getPrecision() != null ? type.getPrecision() : 0);
+        dto.setDecimals(type.getScale() != null ? type.getScale() : 0);
+
+        if (type instanceof AdabasField adabasField) {
+            dto.setShortName(adabasField.getAdabasId());
+        }
+
+        if ((type.getFields() != null) && !type.getFields().isEmpty()) {
+            dto.setFields(type.getFields().stream()
+                    .map(this::mapToAdabasFieldDto)
+                    .toList());
+        }
+
+        return dto;
+    }
+
+    public List<AdabasFileDto> getFiles() {
+        return ddmRepository.findAll().stream()
+                .map(this::mapToAdabasFileDto)
+                .toList();
+    }
+
+    private AdabasFileDto mapToAdabasFileDto(Ddm ddm) {
+        AdabasFileDto dto = new AdabasFileDto();
+        dto.setName(ddm.getName());
+        dto.setUri(ddm.getUri());
+        dto.setDatabase(ddm.getDatabaseId());
+        dto.setFileId(ddm.getFileId());
+        return dto;
     }
 }

@@ -28,7 +28,7 @@ import java.util.List;
 @DiscriminatorColumn(name = "RECORD_TYPE", discriminatorType = DiscriminatorType.STRING, length = 3)
 @DiscriminatorValue("GEN")
 @Entity
-@Table(name = "YOUR_TABLE_NAME", indexes = {@Index(name = "index_parent", columnList = "PARENT")})
+@Table(name = "TYPE", indexes = {@Index(name = "index_parent", columnList = "PARENT")})
 public class Type implements Serializable {
 
   private Long id;

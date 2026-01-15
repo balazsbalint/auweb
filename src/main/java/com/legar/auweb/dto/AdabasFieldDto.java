@@ -60,4 +60,20 @@ public class AdabasFieldDto {
     public void setType(String type) {
         this.type = type;
     }
+
+    public List<AdabasFieldDto> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<AdabasFieldDto> fields) {
+        this.fields = fields;
+    }
+
+    public boolean isPeriodic() {
+        return periodic;
+    }
+
+    public void setPeriodic(boolean periodic) {
+        this.periodic = periodic;
+    }
 }
