@@ -4,6 +4,7 @@ import com.legar.auweb.backend.Programs;
 import com.legar.auweb.dto.AdabasFieldDto;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
+import com.vaadin.flow.component.grid.editor.EditorSaveEvent;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -27,33 +28,18 @@ public class FieldView extends VerticalLayout implements HasUrlParameter<String>
     }
 
     private void configureGrid() {
-        Binder<AdabasFieldDto> binder = new Binder<>(AdabasFieldDto.class);
-        Editor<AdabasFieldDto> editor = fieldGrid.getEditor();
-        editor.setBinder(binder);
-        editor.setBuffered(true);
-
-        TextField nameField = new TextField();
-        binder.forField(nameField).bind(AdabasFieldDto::getName, AdabasFieldDto::setName);
-
-        fieldGrid.addColumn(AdabasFieldDto::getName)
-                .setEditorComponent(nameField)
-                .setHeader("Name")
-                .setSortable(true);
+        Utilities.addEditableColumn(fieldGrid, AdabasFieldDto::getName, AdabasFieldDto::setName, this::saveName)
+                .setHeader("Name");
 
         fieldGrid.addColumn(AdabasFieldDto::getShortName).setHeader("Short Name");
         fieldGrid.addColumn(AdabasFieldDto::getType).setHeader("Type");
         fieldGrid.addColumn(AdabasFieldDto::getLength).setHeader("Length");
         fieldGrid.addColumn(AdabasFieldDto::getDecimals).setHeader("Decimals");
-
-        fieldGrid.addItemDoubleClickListener(e -> {
-            editor.editItem(e.getItem());
-            nameField.focus();
-        });
-
-        fieldGrid.getElement().addEventListener("keyup", event -> editor.cancel())
-                .setFilter("event.key === 'Escape' || event.key === 'Esc'");
-
         fieldGrid.getColumns().forEach(col -> col.setAutoWidth(true));
+    }
+
+    private void saveName(EditorSaveEvent<AdabasFieldDto> event) {
+        programs.updateFieldUsingDto(event.getItem());
     }
 
     @Override

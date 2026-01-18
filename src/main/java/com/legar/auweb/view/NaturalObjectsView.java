@@ -58,19 +58,19 @@ public class NaturalObjectsView extends VerticalLayout {
 
     private void addIoButton(Grid<ProgramDto> grid) {
         grid.addComponentColumn(program -> {
-            Button goButton = new Button("IO");
-            goButton.setThemeName("icon");
-            goButton.addClickListener(event -> {
+            Button ioButton = new Button("IO");
+            ioButton.setThemeName("icon");
+            ioButton.addClickListener(event -> {
                 event.getSource().getUI().ifPresent(ui -> ui.navigate("output/" + program.getId()));
             });
-            goButton.setMaxHeight("1em");
-            return goButton;
+            ioButton.setMaxHeight("1em");
+            return ioButton;
         }).setHeader("Action");
     }
 
     private void save(ProgramDto updatedProgram) {
         Optional
                 .ofNullable(updatedProgram)
-                .ifPresent(programs::updateProgramFromDto);
+                .ifPresent(programs::updateProgramUsingDto);
     }
 }

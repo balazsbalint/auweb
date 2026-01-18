@@ -1,44 +1,30 @@
 package com.legar.auweb.dto;
 
+import com.legar.auweb.entity.AdabasField;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AdabasFieldDto {
-
-    private int file;
+    private Long id;
     private String name;
-    private String shortName;
+    private String shortName; // mapped from adabasId
+    private int level;
     private String type;
-    private int length;
-    private int decimals;
-    private boolean periodic;
+    private Integer length; // mapped from precision
+    private Integer decimals; // mapped from scale
     private List<AdabasFieldDto> fields;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
-    }
-
-    public int getFile() {
-        return file;
-    }
-
-    public void setFile(int file) {
-        this.file = file;
-    }
-
-    public int getDecimals() {
-        return decimals;
-    }
-
-    public void setDecimals(int decimals) {
-        this.decimals = decimals;
-    }
-
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
     }
 
     public void setName(String name) {
@@ -53,12 +39,36 @@ public class AdabasFieldDto {
         this.shortName = shortName;
     }
 
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
     public String getType() {
         return type;
     }
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
+    public Integer getDecimals() {
+        return decimals;
+    }
+
+    public void setDecimals(Integer decimals) {
+        this.decimals = decimals;
     }
 
     public List<AdabasFieldDto> getFields() {
@@ -69,11 +79,26 @@ public class AdabasFieldDto {
         this.fields = fields;
     }
 
-    public boolean isPeriodic() {
-        return periodic;
-    }
+    public static AdabasFieldDto fromEntity(AdabasField entity) {
+        if (entity == null) {
+            return null;
+        }
+        AdabasFieldDto dto = new AdabasFieldDto();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setShortName(entity.getAdabasId());
+        dto.setLevel(entity.getLevel());
+        dto.setType(entity.getType());
+        dto.setLength(entity.getPrecision());
+        dto.setDecimals(entity.getScale());
 
-    public void setPeriodic(boolean periodic) {
-        this.periodic = periodic;
+        if (entity.getFields() != null) {
+            dto.setFields(entity.getFields().stream()
+                    .filter(f -> f instanceof AdabasField)
+                    .map(f -> AdabasFieldDto.fromEntity((AdabasField) f))
+                    .collect(Collectors.toList()));
+        }
+
+        return dto;
     }
 }

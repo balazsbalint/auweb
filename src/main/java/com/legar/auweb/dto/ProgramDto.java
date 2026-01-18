@@ -5,6 +5,7 @@ import com.legar.auweb.entity.Program;
 import com.legar.auweb.entity.SourceLanguage;
 
 public class ProgramDto {
+
     private Long id;
     private String dialect;
     private String name;

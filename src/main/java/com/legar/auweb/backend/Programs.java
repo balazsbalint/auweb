@@ -1,13 +1,14 @@
 package com.legar.auweb.backend;
 
-import com.legar.auweb.dto.AdabasFieldDto;
 import com.legar.auweb.dto.AdabasFileDto;
+import com.legar.auweb.dto.AdabasFieldDto;
 import com.legar.auweb.dto.DdmDto;
 import com.legar.auweb.dto.ProgramDto;
 import com.legar.auweb.entity.AdabasField;
 import com.legar.auweb.entity.Ddm;
 import com.legar.auweb.entity.Program;
 import com.legar.auweb.entity.Type;
+import com.legar.auweb.repository.AdabasFieldRepository;
 import com.legar.auweb.repository.DdmRepository;
 import com.legar.auweb.repository.ProgramRepository;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 /**
@@ -28,10 +28,12 @@ public class Programs {
 
     private final ProgramRepository programRepository;
     private final DdmRepository ddmRepository;
+    private final AdabasFieldRepository fieldRepository;
 
-    public Programs(ProgramRepository programRepository, DdmRepository ddmRepository) {
+    public Programs(ProgramRepository programRepository, DdmRepository ddmRepository, AdabasFieldRepository fieldRepository) {
         this.programRepository = programRepository;
         this.ddmRepository = ddmRepository;
+        this.fieldRepository = fieldRepository;
     }
 
     /**
@@ -85,7 +87,7 @@ public class Programs {
      * @throws IllegalArgumentException if the program with the specified ID does not exist
      */
     @Transactional
-    public void updateProgramFromDto(ProgramDto programDto) {
+    public void updateProgramUsingDto(ProgramDto programDto) {
         Program program = programRepository.findById(programDto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Program not found with id: " + programDto.getId()));
 
@@ -94,6 +96,20 @@ public class Programs {
         program.setDialect(programDto.getDialect());
         program.setUri(programDto.getUri());
         program.setLanguage(programDto.getLanguage());
+        programRepository.save(program);
+    }
+
+    public void updateFieldUsingDto(AdabasFieldDto fieldDto) {
+        AdabasField field = fieldRepository.findById(fieldDto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Field not found with id: " + fieldDto.getId()));
+
+        field.setName(fieldDto.getName());
+        field.setAdabasId(fieldDto.getShortName());
+        field.setType(fieldDto.getType());
+        field.setPrecision(fieldDto.getLength());
+        field.setLevel(fieldDto.getDecimals());
+
+        fieldRepository.save(field);
     }
 
     @Transactional(readOnly = true)
@@ -151,6 +167,7 @@ public class Programs {
 
     private AdabasFieldDto mapToAdabasFieldDto(Type type) {
         AdabasFieldDto dto = new AdabasFieldDto();
+        dto.setId(type.getId());
         dto.setName(type.getName());
         dto.setType(type.getType());
         dto.setLength(type.getPrecision() != null ? type.getPrecision() : 0);

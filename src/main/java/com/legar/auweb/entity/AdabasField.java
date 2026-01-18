@@ -11,6 +11,7 @@ import jakarta.persistence.Entity;
 @Entity
 @DiscriminatorValue("ADA")
 public class AdabasField extends Type {
+
   private String adabasId;
 
   @Column(name = "ADABAS_ID", length = 2)
