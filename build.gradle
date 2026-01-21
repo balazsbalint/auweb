@@ -45,5 +45,5 @@ tasks.withType(Test).configureEach {
 
 // For Vaadin production builds (optional, but good to have)
 vaadin {
-    productionMode = false
+    productionMode = true
 }

@@ -21,7 +21,6 @@ public class Utilities {
      * @param <T> the type of the items in the Grid
      * @param grid the Grid to which the editable column will be added
      * @param valueProvider a ValueProvider to extract the value of the property to be displayed
-     * @param header the header text for the column
      * @param setter a Setter to update the value of the property on the item when changes are saved
      * @param save an EditorSaveListener that handles saving of changes made in the column's editor
      * @return the newly created editable column for the Grid
@@ -32,13 +31,16 @@ public class Utilities {
                                                        EditorSaveListener<T> save) {
         TextField textField = new TextField();
         Editor<T> editor = grid.getEditor();
+        editor.setBuffered(true);
         Binder<T> binder = editor.getBinder();
         Grid.Column<T> column = grid.addColumn(valueProvider)
                 .setEditorComponent(textField);
         binder.forField(textField).bind(valueProvider, setter);
-        grid.addItemClickListener(event -> editor.editItem(event.getItem()));
+        grid.addItemClickListener(event -> {
+            if (editor.isOpen()) { editor.save(); }
+            editor.editItem(event.getItem());
+        });
         editor.addSaveListener(save);
-        editor.setBuffered(true);
         textField.addValueChangeListener(event -> editor.save());
         return column;
     }

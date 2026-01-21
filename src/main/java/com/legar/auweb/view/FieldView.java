@@ -29,12 +29,12 @@ public class FieldView extends VerticalLayout implements HasUrlParameter<String>
 
     private void configureGrid() {
         Utilities.addEditableColumn(fieldGrid, AdabasFieldDto::getName, AdabasFieldDto::setName, this::saveName)
-                .setHeader("Name");
+                .setHeader("Name").setSortable(true);
 
-        fieldGrid.addColumn(AdabasFieldDto::getShortName).setHeader("Short Name");
-        fieldGrid.addColumn(AdabasFieldDto::getType).setHeader("Type");
-        fieldGrid.addColumn(AdabasFieldDto::getLength).setHeader("Length");
-        fieldGrid.addColumn(AdabasFieldDto::getDecimals).setHeader("Decimals");
+        fieldGrid.addColumn(AdabasFieldDto::getShortName).setHeader("Short Name").setSortable(true);
+        fieldGrid.addColumn(AdabasFieldDto::getType).setHeader("Type").setSortable(true);
+        fieldGrid.addColumn(AdabasFieldDto::getLength).setHeader("Length").setSortable(true);
+        fieldGrid.addColumn(AdabasFieldDto::getDecimals).setHeader("Decimals").setSortable(true);
         fieldGrid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
 

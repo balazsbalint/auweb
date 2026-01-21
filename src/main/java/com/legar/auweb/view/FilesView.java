@@ -5,21 +5,21 @@ import com.legar.auweb.dto.AdabasFileDto;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 
-@Route("files")
+@Route(value = "files", layout = RootView.class)
 public class FilesView extends VerticalLayout {
 
     private final Grid<AdabasFileDto> grid = new Grid<>(AdabasFileDto.class, false);
-    private final Programs programs;
+    private final H2 title = new H2("Files");
 
     public FilesView(Programs programs) {
-        this.programs = programs;
         configureGrid();
         grid.setItems(programs.getFiles());
-        add(grid);
+        add(title, grid);
     }
 
     private void configureGrid() {
@@ -29,12 +29,14 @@ public class FilesView extends VerticalLayout {
         grid.addColumn(AdabasFileDto::getUri).setHeader("URI").setSortable(true);
 
         grid.addColumn(new ComponentRenderer<>(file -> {
-            return new Button("View Fields", click -> {
+            Button viewFields = new Button("View", click -> {
                 String path = String.format("%d/%d", file.getDatabase(), file.getFileId());
                 // If getName() doesn't represent the File ID, adjust to the correct integer property
                 UI.getCurrent().navigate(FieldView.class, path);
             });
-        })).setHeader("Actions");
+            viewFields.setMaxHeight("1em");
+            return viewFields;
+        })).setHeader("Record");
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
