@@ -3,12 +3,9 @@ package com.legar.auweb.view;
 import com.legar.auweb.backend.Programs;
 import com.legar.auweb.dto.AdabasFieldDto;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.grid.editor.EditorSaveEvent;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
@@ -28,9 +25,10 @@ public class FieldView extends VerticalLayout implements HasUrlParameter<String>
     }
 
     private void configureGrid() {
-        Utilities.addEditableColumn(fieldGrid, AdabasFieldDto::getName, AdabasFieldDto::setName, this::saveName)
-                .setHeader("Name").setSortable(true);
 
+        fieldGrid.addColumn(AdabasFieldDto::getName).setHeader("Name").setSortable(true);
+        Utilities.addEditableColumn(fieldGrid, AdabasFieldDto::getAlias, AdabasFieldDto::setAlias, this::saveItem)
+                .setHeader("Alias").setSortable(true);
         fieldGrid.addColumn(AdabasFieldDto::getShortName).setHeader("Short Name").setSortable(true);
         fieldGrid.addColumn(AdabasFieldDto::getType).setHeader("Type").setSortable(true);
         fieldGrid.addColumn(AdabasFieldDto::getLength).setHeader("Length").setSortable(true);
@@ -38,7 +36,7 @@ public class FieldView extends VerticalLayout implements HasUrlParameter<String>
         fieldGrid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
 
-    private void saveName(EditorSaveEvent<AdabasFieldDto> event) {
+    private void saveItem(EditorSaveEvent<AdabasFieldDto> event) {
         programs.updateFieldUsingDto(event.getItem());
     }
 

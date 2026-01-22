@@ -99,15 +99,17 @@ public class Programs {
         programRepository.save(program);
     }
 
+    @Transactional
     public void updateFieldUsingDto(AdabasFieldDto fieldDto) {
         AdabasField field = fieldRepository.findById(fieldDto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Field not found with id: " + fieldDto.getId()));
 
         field.setName(fieldDto.getName());
+        field.setAlias(fieldDto.getAlias());
         field.setAdabasId(fieldDto.getShortName());
         field.setType(fieldDto.getType());
         field.setPrecision(fieldDto.getLength());
-        field.setLevel(fieldDto.getDecimals());
+        field.setLevel(fieldDto.getLevel());
 
         fieldRepository.save(field);
     }
@@ -169,6 +171,7 @@ public class Programs {
         AdabasFieldDto dto = new AdabasFieldDto();
         dto.setId(type.getId());
         dto.setName(type.getName());
+        dto.setAlias(type.getAlias());
         dto.setType(type.getType());
         dto.setLength(type.getPrecision() != null ? type.getPrecision() : 0);
         dto.setDecimals(type.getScale() != null ? type.getScale() : 0);

@@ -1,5 +1,6 @@
 package com.legar.auweb.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,6 +34,7 @@ public class Type implements Serializable {
 
   private Long id;
   private String name;
+  private String alias;
   private Integer level;
   private String type;
   private Integer precision;
@@ -74,6 +76,20 @@ public class Type implements Serializable {
    */
   public void setName(String value) {
     this.name = value;
+  }
+
+  /**
+   * Retrieves the alias associated with this object.
+   *
+   * @return the alias as a {@link String}, or {@code null} if no alias is set
+   */
+  @Nullable
+  public String getAlias() {
+    return alias;
+  }
+
+  public void setAlias(@Nullable String alias) {
+    this.alias = alias;
   }
 
   /**
