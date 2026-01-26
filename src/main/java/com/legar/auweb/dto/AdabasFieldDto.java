@@ -3,6 +3,7 @@ package com.legar.auweb.dto;
 import com.legar.auweb.entity.AdabasField;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AdabasFieldDto {
@@ -110,5 +111,16 @@ public class AdabasFieldDto {
 
     public void setFields(List<AdabasFieldDto> fields) {
         this.fields = fields;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof AdabasFieldDto that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
